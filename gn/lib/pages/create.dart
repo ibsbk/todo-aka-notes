@@ -18,7 +18,6 @@ class CreateSrceen extends StatefulWidget {
   _CreateSrceenState createState() => _CreateSrceenState();
 }
 
-
 class _CreateSrceenState extends State<CreateSrceen> {
   void initFirebase() async {
     WidgetsFlutterBinding.ensureInitialized();
@@ -39,24 +38,20 @@ class _CreateSrceenState extends State<CreateSrceen> {
 
   String noticeText = '';
 
-  Future pickDate(BuildContext context) async {
-    final newDate = await showDatePicker(
-        context: context,
-        initialDate: date,
-        firstDate: DateTime(DateTime
-            .now()
-            .year - 5),
-        lastDate: DateTime(DateTime
-            .now()
-            .year + 5));
-
-    if (newDate == null) return;
-
-    setState(() {
-      date = newDate;
-      dateFormated = DateFormat('dd/MM/yy').format(date);
-    });
-  }
+  // Future pickDate(BuildContext context) async {
+  //   final newDate = await showDatePicker(
+  //       context: context,
+  //       initialDate: date,
+  //       firstDate: DateTime(DateTime.now().year - 5),
+  //       lastDate: DateTime(DateTime.now().year + 5));
+  //
+  //   if (newDate == null) return;
+  //
+  //   setState(() {
+  //     date = newDate;
+  //     dateFormated = DateFormat('dd/MM/yy').format(date);
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -73,26 +68,10 @@ class _CreateSrceenState extends State<CreateSrceen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
-                  child: Row(
-                    children: [
-                      TextButton(
-                          onPressed: () {
-                            pickDate(context);
-                          },
-                          child: Text('$dateFormated')),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
                 Row(
                   children: [
                     Container(
-                      child: Text('Заметка'),
+                      child: Text('Задача'),
                     )
                   ],
                 ),
@@ -124,30 +103,38 @@ class _CreateSrceenState extends State<CreateSrceen> {
                     width: 150,
                     child: ElevatedButton(
                       onPressed: () async {
-                        print('FFFFFFFFFFFFFFFFFFFFFFFFFFF');
-                        var url = Uri.parse(
-                            'https://10.0.2.2:7168/api/notes/add_note');
-                        print(url);
-                        var jsonString = '{}';
-                        var now = DateTime.now().toIso8601String();
-                        print(now.toString());
-                        var userIdUrl = Uri.parse('https://10.0.2.2:7168/api/users/get_userId/'+ widget.prov!.id);
-                        print(userIdUrl);
-                        var userIdResponse = await http.get(userIdUrl,
-                            headers: { "Content-Type": "text"});
-                        var note = jsonEncode({"note": noticeText,
-                          "created_at": now.toString(),
-                          "user_id": userIdResponse.body.toString(),
-                          "isDone": false,
+                        setState(() async {
+                          print('FFFFFFFFFFFFFFFFFFFFFFFFFFF');
+                          var url = Uri.parse(
+                              'https://10.0.2.2:7168/api/notes/add_note');
+                          print(url);
+                          var jsonString = '{}';
+                          var now = DateTime.now().toIso8601String();
+                          print(now.toString());
+                          var userIdUrl = Uri.parse(
+                              'https://10.0.2.2:7168/api/users/get_userId/' +
+                                  widget.prov!.id);
+                          print(userIdUrl);
+                          var userIdResponse = await http.get(userIdUrl,
+                              headers: {"Content-Type": "text"});
+                          var note = jsonEncode({
+                            "note": noticeText,
+                            "created_at": now.toString(),
+                            "user_id": userIdResponse.body.toString(),
+                            "isDone": false,
+                          });
+                          print(userIdResponse.body.toString());
+                          var response = await http.put(url,
+                              headers: {"Content-Type": "application/json"},
+                              body: note);
+                          if (response.statusCode == 200) {
+                            Navigator.pushReplacement(
+                                context,
+                                new MaterialPageRoute(
+                                    builder: (__) =>
+                                        new MainScreen(prov: widget.prov)));
+                          }
                         });
-                        print(userIdResponse.body.toString());
-                        var response = await http.put(
-                            url, headers: { "Content-Type": "application/json"},
-                            body: note);
-                        print('Response status: ${response.statusCode}');
-                        print('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
-                        print('Response body: ${response.body}');
-                        print('BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB');
                       },
                       child: Text('Сохранить'),
                     )),
@@ -165,7 +152,7 @@ class _CreateSrceenState extends State<CreateSrceen> {
                               context,
                               new MaterialPageRoute(
                                   builder: (__) =>
-                                  new MainScreen(prov: widget.prov)));
+                                      new MainScreen(prov: widget.prov)));
                         });
                       },
                       child: Text('Отмена'),
