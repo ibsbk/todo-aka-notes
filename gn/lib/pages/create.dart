@@ -38,21 +38,6 @@ class _CreateSrceenState extends State<CreateSrceen> {
 
   String noticeText = '';
 
-  // Future pickDate(BuildContext context) async {
-  //   final newDate = await showDatePicker(
-  //       context: context,
-  //       initialDate: date,
-  //       firstDate: DateTime(DateTime.now().year - 5),
-  //       lastDate: DateTime(DateTime.now().year + 5));
-  //
-  //   if (newDate == null) return;
-  //
-  //   setState(() {
-  //     date = newDate;
-  //     dateFormated = DateFormat('dd/MM/yy').format(date);
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
