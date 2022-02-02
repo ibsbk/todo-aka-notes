@@ -20,6 +20,7 @@ class MyHttpOverrides extends HttpOverrides{
 
 
 Future main() async{
+  HttpOverrides.global = MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 

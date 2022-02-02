@@ -20,7 +20,6 @@ class _AuthScreenState extends State<AuthScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    HttpOverrides.global = MyHttpOverrides();
     final provider = Provider.of<GoogleSignInProvider>(context, listen: false);
     provider.googleLogin().then((value) {
       if (provider.googleSignIn.currentUser != null) {

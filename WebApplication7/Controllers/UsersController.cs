@@ -37,16 +37,36 @@ namespace WebApplication7.Controllers
         [HttpGet("get_user/{google_id}")]
         public async Task<ActionResult<Note>> Get_User(string google_id)
         {
-            var users = db.users.Where(x => x.google_id == google_id).ToList();
-            if (users.Any())
-            {
-                return Ok(users);
-            }
-            else
-            {
-                return BadRequest();
-            }
+            try{
+				var users = db.users.Where(x => x.google_id == google_id).ToList();
+					if (users.Any())
+					{
+						return Ok(users);
+					}
+					else
+					{
+						return BadRequest();
+					}
+			} catch{
+				return BadRequest();
+			}
             
         }
+
+        [HttpGet("get_userId/{google_id}")]
+        public async Task<ActionResult<Note>> Get_UserId(string google_id)
+        {
+            try
+            {
+                var user = db.users.Where(x => x.google_id == google_id).First();
+				return Ok(user.id);
+            }
+            catch
+            {
+                return BadRequest();
+            }  
+        }
+		
+
     }
 }

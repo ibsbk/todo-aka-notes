@@ -6,5 +6,6 @@ namespace WebApplication7.Models
         public string note { get; set; } = string.Empty;
         public DateTime created_at { get; set; }
         public int user_id { get; set; }
+        public bool isdone { get; set; }
     }
 }
