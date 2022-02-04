@@ -11,12 +11,12 @@ namespace WebApplication7.Controllers
 
         UsersContext db = new();
 
-        [HttpGet("get_notes")]
-        public async Task<ActionResult<Note>> Get_Notes(Note request)
+        [HttpGet("get_user_notes/{user_id}")]
+        public async Task<ActionResult<Note>> Get_Notes(int user_id)
         {
             try
             {
-                var notes = db.notes.Where(x => x.user_id == request.user_id).ToList();
+                var notes = db.notes.Where(x => x.user_id == user_id).ToList();
                 if (notes.Any())
                 {
                     return Ok(notes);

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:gn/google_sign_in.dart';
 import 'package:gn/pages/mainscreen.dart';
-import 'package:gn/main.dart';
 import 'dart:convert';
 import 'dart:io';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
@@ -15,58 +13,54 @@ class AuthScreen extends StatefulWidget {
   _AuthScreenState createState() => _AuthScreenState();
 }
 
+void auth(context) async {
+  final googleAccount = Provider.of<GoogleSignInProvider>(context, listen: false);
+  await googleAccount.googleLogin();
+
+  if (googleAccount.googleSignIn.currentUser != null) {
+    print(googleAccount.googleSignIn.currentUser!.email);
+    print('FFFFFFFFFFFFFFFFFFFFFFFFFFF');
+    var getUserUrl = Uri.parse('https://10.0.2.2:7168/api/users/get_user/' +
+        googleAccount.googleSignIn.currentUser!.id);
+    print(getUserUrl);
+    var getUserResponse = await http
+        .get(getUserUrl, headers: {"Content-Type": "application/json"});
+    if (getUserResponse.statusCode != 200) {
+      var addUserUrl = Uri.parse('https://10.0.2.2:7168/api/users/add_user');
+      print(addUserUrl);
+      var user = jsonEncode({
+        "google_id": googleAccount.googleSignIn.currentUser!.id,
+        "name": googleAccount.googleSignIn.currentUser!.displayName
+      });
+      print(user);
+      var addUserResponse = await http.put(addUserUrl,
+          headers: {"Content-Type": "application/json"}, body: user);
+      print(addUserResponse.statusCode);
+      print(addUserResponse.body);
+      print(1111);
+      if (addUserResponse.statusCode == 200) {
+        Navigator.pushReplacement(
+            context,
+            new MaterialPageRoute(
+                builder: (__) =>
+                new MainScreen(
+                    googleAccount: googleAccount.googleSignIn.currentUser)));
+  }
+  } else {
+  Navigator.pushReplacement(
+  context,
+  new MaterialPageRoute(
+  builder: (__) =>
+  new MainScreen(googleAccount: googleAccount.googleSignIn.currentUser)));
+  }
+}
+}
+
 class _AuthScreenState extends State<AuthScreen> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    final provider = Provider.of<GoogleSignInProvider>(context, listen: false);
-    provider.googleLogin().then((value) {
-      if (provider.googleSignIn.currentUser != null) {
-        print(provider.googleSignIn.currentUser!.email);
-        print('FFFFFFFFFFFFFFFFFFFFFFFFFFF');
-        var url = Uri.parse('https://10.0.2.2:7168/api/users/get_user/' +
-            provider.googleSignIn.currentUser!.id);
-        print(url);
-        var response = http.get(url,
-            headers: {"Content-Type": "application/json"}).then((value) {
-          if (value.statusCode != 200) {
-            var url = Uri.parse('https://10.0.2.2:7168/api/users/add_user');
-            print(url);
-            var jsonString = '{}';
-            var user = jsonEncode({
-              "google_id": provider.googleSignIn.currentUser!.id,
-              "name": provider.googleSignIn.currentUser!.displayName
-            });
-            print(user);
-            var response = http
-                .put(url,
-                    headers: {"Content-Type": "application/json"}, body: user)
-                .then((value) => {
-                      print(value.statusCode),
-                      print(value.body),
-                      print(1111),
-                      if (value.statusCode == 200)
-                        {
-                          Navigator.pushReplacement(
-                              context,
-                              new MaterialPageRoute(
-                                  builder: (__) => new MainScreen(
-                                      prov:
-                                          provider.googleSignIn.currentUser))),
-                        }
-                    });
-          } else {
-            Navigator.pushReplacement(
-                context,
-                new MaterialPageRoute(
-                    builder: (__) => new MainScreen(
-                        prov: provider.googleSignIn.currentUser)));
-          }
-        });
-      }
-      print(123444);
-    });
+    auth(context);
   }
 
   @override
@@ -88,22 +82,7 @@ class _AuthScreenState extends State<AuthScreen> {
               children: [
                 ElevatedButton(
                     onPressed: () {
-                      final provider = Provider.of<GoogleSignInProvider>(
-                          context,
-                          listen: false);
-                      provider.googleLogin();
-                      if (provider.googleSignIn.currentUser != null) {
-                        print('cool');
-                        print(provider.googleSignIn.currentUser!.id);
-                        //Navigator.of(context).pushReplacementNamed('/main');
-                        Navigator.pushReplacement(
-                            context,
-                            new MaterialPageRoute(
-                                builder: (__) => new MainScreen(
-                                    prov: provider.googleSignIn.currentUser)));
-                      } else {
-                        print('not cool');
-                      }
+                      auth(context);
                     },
                     child: Text('Google Sign In'))
               ],
