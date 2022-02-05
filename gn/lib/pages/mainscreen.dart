@@ -46,6 +46,8 @@ class _MainScreenState extends State<MainScreen> {
     initFirebase();
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     var notesList = [];
@@ -55,6 +57,7 @@ class _MainScreenState extends State<MainScreen> {
       });
     });
     return SafeArea(
+
       child: Scaffold(
         appBar: AppBar(
           title: Center(
@@ -79,41 +82,99 @@ class _MainScreenState extends State<MainScreen> {
             child: FutureBuilder(
           future: getAllNotes(widget.googleAccount!.id),
           builder: (context, snapshot) {
-            return ListView.builder(
-                itemCount: notesList.length,
-                itemBuilder: (context, index) {
-                  if (notesList[index].isdone == true) {
-                    return Container(
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.black,
-                            width: 1,
-                          ),
-                          color: Colors.green),
-                      margin: const EdgeInsets.all(10.0),
-                      child: ListTile(
-                        title: Text(notesList[index].note.toString()),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.0)),
-                      ),
-                    );
-                  } else {
-                    return Container(
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.black,
-                            width: 1,
-                          ),
-                          color: Colors.red),
-                      margin: const EdgeInsets.all(10.0),
-                      child: ListTile(
-                        title: Text(notesList[index].note.toString()),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20.0)),
-                      ),
-                    );
-                  }
-                });
+            if(snapshot.hasData){
+              return ListView.builder(
+                  itemCount: notesList.length,
+                  itemBuilder: (context, index) {
+                    if (notesList[index].isdone == true) {
+                      return Container(
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.black,
+                              width: 1,
+                            ),
+                            color: Colors.green),
+                        margin: const EdgeInsets.all(10.0),
+                        child: ListTile(
+                          title: Text(notesList[index].note.toString()),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0)),
+                          onLongPress: () {
+                            setState(() {
+                              notesList[index].isdone = false;
+                              var url = Uri.parse(
+                                  'https://10.0.2.2:7168/api/notes/edit_note');
+                              var body = {
+                                'id': notesList[index].id,
+                                'note': notesList[index].note,
+                                'created_at':
+                                notesList[index].created_at.toString(),
+                                'user_id': notesList[index].user_id,
+                                'isdone': notesList[index].isdone,
+                              };
+                              var z = jsonEncode(body);
+                              print(z);
+                              var response = http
+                                  .patch(url,
+                                  headers: {
+                                    "Content-Type": "application/json"
+                                  },
+                                  body: z)
+                                  .then((value) {
+                                print(value.body);
+                              });
+                            });
+                          },
+                        ),
+                      );
+                    } else {
+                      return Container(
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.black,
+                              width: 1,
+                            ),
+                            color: Colors.red),
+                        margin: const EdgeInsets.all(10.0),
+                        child: ListTile(
+                          title: Text(notesList[index].note.toString()),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0)),
+                          onLongPress: () {
+                            setState(() {
+                              notesList[index].isdone = true;
+                              var url = Uri.parse(
+                                  'https://10.0.2.2:7168/api/notes/edit_note');
+                              var body = {
+                                'id': notesList[index].id,
+                                'note': notesList[index].note,
+                                'created_at':
+                                notesList[index].created_at.toString(),
+                                'user_id': notesList[index].user_id,
+                                'isdone': notesList[index].isdone,
+                              };
+                              var z = jsonEncode(body);
+                              print(z);
+                              var response = http
+                                  .patch(url,
+                                  headers: {
+                                    "Content-Type": "application/json"
+                                  },
+                                  body: z)
+                                  .then((value) {
+                                print(value.body);
+                                print(value.statusCode);
+                              });
+                            });
+                          },
+                        ),
+                      );
+                    }
+                  });
+            } else{
+              return Center(child: Text('no data'),);
+            }
+
           },
         )),
         floatingActionButton: FloatingActionButton(
@@ -129,17 +190,3 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 }
-// ListView.builder(
-// itemCount: 1,
-// itemBuilder: (context, index) {
-// print(widget.notesList.length);
-// return Row(
-// crossAxisAlignment: CrossAxisAlignment.center,
-// mainAxisAlignment: MainAxisAlignment.center,
-// children: [
-// Center(
-// child: Text(widget.notesList.runtimeType.toString()),
-// )
-// ],
-// );
-// }),

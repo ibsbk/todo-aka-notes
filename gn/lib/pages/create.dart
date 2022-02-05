@@ -92,7 +92,6 @@ class _CreateScreenState extends State<CreateScreen> {
                             var userIdUrl = Uri.parse(
                                 'https://10.0.2.2:7168/api/users/get_userId/' +
                                     widget.googleAccount!.id);
-                            print(userIdUrl);
                             var userIdResponse = await http.get(userIdUrl,
                                 headers: {"Content-Type": "text"});
                             var note = jsonEncode({
@@ -101,7 +100,6 @@ class _CreateScreenState extends State<CreateScreen> {
                               "user_id": userIdResponse.body.toString(),
                               "isDone": false,
                             });
-                            print(userIdResponse.body.toString());
                             var response = await http.put(url,
                                 headers: {"Content-Type": "application/json"},
                                 body: note);

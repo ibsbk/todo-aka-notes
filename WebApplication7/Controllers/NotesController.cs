@@ -16,7 +16,7 @@ namespace WebApplication7.Controllers
         {
             try
             {
-                var notes = db.notes.Where(x => x.user_id == user_id).ToList();
+                var notes = db.notes.Where(x => x.user_id == user_id).OrderBy(x=>x.id).ToList();
                 if (notes.Any())
                 {
                     return Ok(notes);
@@ -60,7 +60,8 @@ namespace WebApplication7.Controllers
                     try
                     {
                         note.note = request.note;
-                        note.created_at = request.created_at.ToUniversalTime();
+                        note.isdone = request.isdone;
+						db.notes.Update(note);
                         db.SaveChanges();
                         return Ok(note);
                     }

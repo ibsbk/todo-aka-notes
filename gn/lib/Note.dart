@@ -16,4 +16,5 @@ class Note {
       isdone: json["isdone"],
     );
   }
+
 }
