@@ -1,18 +1,19 @@
 import 'package:gn/pages/mainscreen.dart';
 import 'package:flutter/material.dart';
-import 'package:gn/serv/HTTPRequests.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:gn/serv/HTTPRequests.dart';
 
-class CreateScreen extends StatefulWidget {
+class EditScreen extends StatefulWidget {
   final googleAccount;
+  var note;
 
-  CreateScreen({this.googleAccount});
+  EditScreen({this.googleAccount, this.note});
 
   @override
-  _CreateScreenState createState() => _CreateScreenState();
+  _EditScreenState createState() => _EditScreenState();
 }
 
-class _CreateScreenState extends State<CreateScreen> {
+class _EditScreenState extends State<EditScreen> {
   void initFirebase() async {
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp();
@@ -23,17 +24,42 @@ class _CreateScreenState extends State<CreateScreen> {
     super.initState();
   }
 
-  final textControl = TextEditingController();
+  HTTPRequests request = new HTTPRequests();
 
   @override
   Widget build(BuildContext context) {
-    HTTPRequests request = new HTTPRequests();
+    String noticeText = widget.note.note;
+    var textControl = TextEditingController()..text = widget.note.note;
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
           title: Center(
-            child: Text('create notice'),
-          ),
+              child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('edit notice'),
+                ],
+              ),
+              Column(
+                children: [
+                  ElevatedButton(
+                      onPressed: () {
+                        try {
+                          request.deleteNote(
+                              context, widget.note, widget.googleAccount);
+                        } catch (e) {
+                          print(e);
+                        }
+                      },
+                      child: Text('Удалить'))
+                ],
+              ),
+            ],
+          )),
         ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -56,9 +82,10 @@ class _CreateScreenState extends State<CreateScreen> {
                 Container(
                   width: 300,
                   child: TextField(
+                    controller: textControl,
                     maxLines: 20,
                     onChanged: (String str) {
-                      textControl.text = str;
+                      noticeText = str;
                     },
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
@@ -75,13 +102,15 @@ class _CreateScreenState extends State<CreateScreen> {
                 Container(
                     width: 150,
                     child: ElevatedButton(
-                      onPressed: () async {
-                        try {
-                          request.createNote(context, textControl.text,
-                              widget.googleAccount);
-                        } catch (e) {
-                          print(e);
-                        }
+                      onPressed: () {
+                        setState(() {
+                          try {
+                            request.editNote(context, textControl.text,
+                                widget.note, widget.googleAccount);
+                          } catch (e) {
+                            print(e);
+                          }
+                        });
                       },
                       child: Text('Сохранить'),
                     )),
