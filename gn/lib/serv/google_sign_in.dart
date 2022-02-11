@@ -22,7 +22,7 @@ class GoogleAuth extends ChangeNotifier{
       idToken: googleAuth.idToken,
     );
 
-    var userCredential = await _auth.signInWithCredential(credential);
+    await _auth.signInWithCredential(credential);
   }
 
   Future signOut() async{

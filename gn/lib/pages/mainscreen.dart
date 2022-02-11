@@ -29,16 +29,6 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     HTTPRequests request = new HTTPRequests();
-    var notesList = [];
-    try {
-      request.getAllNotes(widget.googleAccount!.id).then((value) {
-        value.forEach((element) {
-          notesList.add(element);
-        });
-      });
-    } catch (e) {
-      print(e);
-    }
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -84,15 +74,16 @@ class _MainScreenState extends State<MainScreen> {
           )),
         ),
         body: Container(
-            child: FutureBuilder(
-                future: request.getAllNotes(widget.googleAccount!.id),
+            child: FutureBuilder<List>(
+                future: request.getAllNotes(context, widget.googleAccount!.id),
                 builder: (context, snapshot) {
                   try {
                     if (snapshot.hasData) {
+                      var notesList = snapshot.data;
                       return ListView.builder(
-                          itemCount: notesList.length,
+                          itemCount: notesList?.length,
                           itemBuilder: (context, index) {
-                            if (notesList[index].isdone == true) {
+                            if (notesList?[index].isdone == true) {
                               return Container(
                                 decoration: BoxDecoration(
                                     border: Border.all(
@@ -102,14 +93,17 @@ class _MainScreenState extends State<MainScreen> {
                                     color: Colors.green),
                                 margin: const EdgeInsets.all(10.0),
                                 child: ListTile(
-                                  title: Text(notesList[index].note.toString()),
+                                  title: Text(notesList?[index].note),
                                   shape: RoundedRectangleBorder(
                                       borderRadius:
                                           BorderRadius.circular(20.0)),
                                   onTap: () {
                                     setState(() {
-                                      request.isDoneChange(
-                                          notesList[index], false);
+                                      try{
+                                        request.isDoneChange(context,
+                                            notesList?[index], false);
+                                        (context as Element).reassemble();
+                                      } catch(e){}
                                     });
                                   },
                                   onLongPress: () {
@@ -119,7 +113,7 @@ class _MainScreenState extends State<MainScreen> {
                                             builder: (__) => new EditScreen(
                                                 googleAccount:
                                                     widget.googleAccount,
-                                                note: notesList[index])));
+                                                note: notesList?[index])));
                                   },
                                 ),
                               );
@@ -133,14 +127,16 @@ class _MainScreenState extends State<MainScreen> {
                                     color: Colors.red),
                                 margin: const EdgeInsets.all(10.0),
                                 child: ListTile(
-                                  title: Text(notesList[index].note.toString()),
+                                  title: Text(notesList?[index].note),
                                   shape: RoundedRectangleBorder(
                                       borderRadius:
                                           BorderRadius.circular(20.0)),
                                   onTap: () {
                                     setState(() {
-                                      request.isDoneChange(
-                                          notesList[index], true);
+                                      try{
+                                        request.isDoneChange(context,
+                                            notesList?[index], true);
+                                      } catch(e){}
                                     });
                                   },
                                   onLongPress: () {
@@ -150,7 +146,7 @@ class _MainScreenState extends State<MainScreen> {
                                             builder: (__) => new EditScreen(
                                                   googleAccount:
                                                       widget.googleAccount,
-                                                  note: notesList[index],
+                                                  note: notesList?[index],
                                                 )));
                                   },
                                 ),
@@ -159,12 +155,12 @@ class _MainScreenState extends State<MainScreen> {
                           });
                     } else {
                       return Center(
-                        child: Text('no data'),
+                        child: CircularProgressIndicator(),
                       );
                     }
                   } catch (e) {
                     return Center(
-                      child: Text(e.toString()),
+                      child: Text('ошибка'),
                     );
                   }
                 })),
