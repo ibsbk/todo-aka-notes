@@ -2,11 +2,11 @@
 
 namespace WebApplication7.Models
 {
-    public class UsersContext : DbContext
+    public class DBContext : DbContext
     {
         public DbSet<User> users { get; set; }
         public DbSet<Note> notes { get; set; }
-        public UsersContext()
+        public DBContext()
         {
             Database.EnsureCreated();
         }

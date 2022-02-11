@@ -9,14 +9,14 @@ namespace WebApplication7.Controllers
     public class NotesController : ControllerBase
     {
 
-        UsersContext db = new();
+        DBContext db = new();
 
         [HttpGet("get_user_notes/{user_id}")]
         public async Task<ActionResult<Note>> Get_Notes(int user_id)
         {
             try
             {
-                var notes = db.notes.Where(x => x.user_id == user_id).OrderBy(x=>x.id).ToList();
+                var notes = db.notes.Where(x => x.user_id == user_id).OrderBy(x=>x.id ).ToList();
                 if (notes.Any())
                 {
                     return Ok(notes);

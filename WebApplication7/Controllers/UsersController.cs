@@ -9,7 +9,7 @@ namespace WebApplication7.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        UsersContext db = new();
+        DBContext db = new();
 
         [HttpPut("add_user")]
         public async Task<ActionResult<Note>> Add_User(User request)
