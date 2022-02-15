@@ -7,9 +7,9 @@ import 'package:gn/serv/HTTPRequests.dart';
 import 'package:gn/serv/google_sign_in.dart';
 
 class MainScreen extends StatefulWidget {
-  final googleAccount;
+  final GoogleAuth googleAccount = new GoogleAuth();
 
-  MainScreen({this.googleAccount});
+  // MainScreen({this.googleAccount});
 
   @override
   _MainScreenState createState() => _MainScreenState();
@@ -24,6 +24,7 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     initFirebase();
+    widget.googleAccount.googleLogin();
   }
 
   @override
@@ -44,10 +45,10 @@ class _MainScreenState extends State<MainScreen> {
                   ),
                   Row(
                     children: [
-                      Text(
-                        widget.googleAccount.email,
-                        style: TextStyle(fontSize: 10),
-                      )
+                      // Text(
+                      //   widget.googleAccount.googleSignIn.currentUser!.email,
+                      //   style: TextStyle(fontSize: 10),
+                      // )
                     ],
                   ),
                 ],
@@ -59,10 +60,7 @@ class _MainScreenState extends State<MainScreen> {
                         try {
                           final googleAccount = new GoogleAuth();
                           googleAccount.signOut();
-                          Navigator.pushReplacement(
-                              context,
-                              new MaterialPageRoute(
-                                  builder: (__) => new AuthScreen()));
+                          Navigator.of(context).pushReplacementNamed("/auth");
                         } catch (e) {
                           print(e);
                         }
@@ -75,7 +73,7 @@ class _MainScreenState extends State<MainScreen> {
         ),
         body: Container(
             child: FutureBuilder<List>(
-                future: request.getAllNotes(context, widget.googleAccount!.id),
+                future: request.getAllNotes(widget.googleAccount.googleSignIn.currentUser),
                 builder: (context, snapshot) {
                   try {
                     if (snapshot.hasData) {

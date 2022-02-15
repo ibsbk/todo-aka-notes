@@ -7,7 +7,7 @@ import 'package:gn/mod/Note.dart';
 class HTTPRequests {
   Future<http.Response> getUserId(googleAccount) async {
     var userIdUrl = Uri.parse(
-        'https://10.0.2.2:7168/api/users/get_userId/' + googleAccount!.id);
+        'https://10.0.2.2:7168/api/users/get_userId/' + googleAccount?.id);
     var userIdResponse =
         await http.get(userIdUrl, headers: {"Content-Type": "text"});
     return userIdResponse;
@@ -25,17 +25,17 @@ class HTTPRequests {
         var addUserResponse = await http.put(addUserUrl,
             headers: {"Content-Type": "application/json"}, body: user);
         if (addUserResponse.statusCode == 200) {
-          Navigator.pushReplacement(
-              context,
-              new MaterialPageRoute(
-                  builder: (__) =>
-                      new MainScreen(googleAccount: googleAccount)));
+          // Navigator.pushReplacement(
+          //     context,
+          //     new MaterialPageRoute(
+          //         builder: (__) =>
+          //             new MainScreen(googleAccount: googleAccount)));
         } else {}
       } else {
-        Navigator.pushReplacement(
-            context,
-            new MaterialPageRoute(
-                builder: (__) => new MainScreen(googleAccount: googleAccount)));
+        // Navigator.pushReplacement(
+        //     context,
+        //     new MaterialPageRoute(
+        //         builder: (__) => new MainScreen(googleAccount: googleAccount)));
       }
     } catch (e) {
       showDialog<String>(
@@ -69,10 +69,10 @@ class HTTPRequests {
         var response = await http.put(url,
             headers: {"Content-Type": "application/json"}, body: note);
         if (response.statusCode == 200) {
-          Navigator.pushReplacement(
-              context,
-              new MaterialPageRoute(
-                  builder: (__) => new MainScreen(googleAccount: googleAccount)));
+          // Navigator.pushReplacement(
+          //     context,
+          //     new MaterialPageRoute(
+          //         builder: (__) => new MainScreen(googleAccount: googleAccount)));
         }
       } else {
         showDialog<String>(
@@ -106,7 +106,7 @@ class HTTPRequests {
     }
   }
 
-  Future<List> getAllNotes(context, google_id) async {
+  Future<List> getAllNotes(google_id) async {
     try{
       var allNotes = [];
       var getUserUrl =
@@ -125,19 +125,19 @@ class HTTPRequests {
       });
       return allNotes;
     } catch(e){
-      showDialog<String>(
-        context: context,
-        builder: (BuildContext context) => AlertDialog(
-          title: const Text('Ошибка'),
-          content: const Text('Ошибка получения задач'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, 'OK'),
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
+      // showDialog<String>(
+      //   context: context,
+      //   builder: (BuildContext context) => AlertDialog(
+      //     title: const Text('Ошибка'),
+      //     content: const Text('Ошибка получения задач'),
+      //     actions: [
+      //       TextButton(
+      //         onPressed: () => Navigator.pop(context, 'OK'),
+      //         child: const Text('OK'),
+      //       ),
+      //     ],
+      //   ),
+      // );
       return [];
     }
   }
@@ -186,10 +186,10 @@ class HTTPRequests {
       var response = await http.delete(url,
           headers: {"Content-Type": "application/json"}, body: deleteNote);
       if (response.statusCode == 200) {
-        Navigator.pushReplacement(
-            context,
-            new MaterialPageRoute(
-                builder: (__) => new MainScreen(googleAccount: googleAccount)));
+        // Navigator.pushReplacement(
+        //     context,
+        //     new MaterialPageRoute(
+        //         builder: (__) => new MainScreen(googleAccount: googleAccount)));
       }
     } catch(e){
       showDialog<String>(
@@ -222,10 +222,10 @@ class HTTPRequests {
         var response = await http.patch(url,
             headers: {"Content-Type": "application/json"}, body: noteNew);
         if (response.statusCode == 200) {
-          Navigator.pushReplacement(
-              context,
-              new MaterialPageRoute(
-                  builder: (__) => new MainScreen(googleAccount: googleAccount)));
+          // Navigator.pushReplacement(
+          //     context,
+          //     new MaterialPageRoute(
+          //         builder: (__) => new MainScreen(googleAccount: googleAccount)));
         } else {
           showDialog<String>(
             context: context,

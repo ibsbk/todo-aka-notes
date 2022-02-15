@@ -128,7 +128,8 @@ class _EditScreenState extends State<EditScreen> {
                               context,
                               new MaterialPageRoute(
                                   builder: (__) => new MainScreen(
-                                      googleAccount: widget.googleAccount)));
+                                      // googleAccount: widget.googleAccount
+                                  )));
                         });
                       },
                       child: Text('Отмена'),

@@ -99,7 +99,8 @@ class _CreateScreenState extends State<CreateScreen> {
                               context,
                               new MaterialPageRoute(
                                   builder: (__) => new MainScreen(
-                                      googleAccount: widget.googleAccount)));
+                                      // googleAccount: widget.googleAccount
+                                  )));
                         });
                       },
                       child: Text('Отмена'),
