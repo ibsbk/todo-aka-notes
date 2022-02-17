@@ -38,19 +38,7 @@ class HTTPRequests {
         //         builder: (__) => new MainScreen(googleAccount: googleAccount)));
       }
     } catch (e) {
-      showDialog<String>(
-        context: context,
-        builder: (BuildContext context) => AlertDialog(
-          title: const Text('Ошибка'),
-          content: const Text('Ошибка подключения'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.pop(context, 'OK'),
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
+
     }
   }
 

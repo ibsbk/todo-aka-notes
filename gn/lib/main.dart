@@ -22,28 +22,27 @@ Future main() async {
   HttpOverrides.global = MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  UserRepository userRepository = new UserRepository();
 
   runApp(
-      BlocProvider(create: (context)=> UserCubit(userRepository),
-      child: MaterialApp(
-        initialRoute: '/auth',
-        routes: {
-          '/main': (context) => MainScreen(),
-          '/auth': (context) => AuthScreen(),
-          '/create': (context) => CreateScreen(),
-          '/edit': (context) => EditScreen(),
-        },
-      ),)
+    MaterialApp(
+      initialRoute: '/auth',
+      routes: {
+        '/main': (context) => MainScreen(),
+        '/auth': (context) => AuthScreen(),
+        '/create': (context) => CreateScreen(),
+        '/edit': (context) => EditScreen(),
+      },
+    ),
   );
 
-  // MaterialApp(
-  //   initialRoute: '/auth',
-  //   routes: {
-  //     '/main': (context) => MainScreen(),
-  //     '/auth': (context) => AuthScreen(),
-  //     '/create': (context) => CreateScreen(),
-  //     '/edit': (context) => EditScreen(),
-  //   },
-  // )
+  // BlocProvider(create: (context)=> UserCubit(userRepository),
+  //   child: MaterialApp(
+  //     initialRoute: '/auth',
+  //     routes: {
+  //       '/main': (context) => MainScreen(),
+  //       '/auth': (context) => AuthScreen(),
+  //       '/create': (context) => CreateScreen(),
+  //       '/edit': (context) => EditScreen(),
+  //     },
+  //   ),)
 }

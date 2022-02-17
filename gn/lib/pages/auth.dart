@@ -38,104 +38,105 @@ class _AuthScreenState extends State<AuthScreen> {
   @override
   Widget build(BuildContext context) {
     final googleAuth = new GoogleAuth();
-    // googleAuth.googleLogin();
-        return BlocListener<UserCubit, UserState>(
-          listener: (context, state) {
+    UserRepository userRepository = new UserRepository();
+    return BlocProvider(create: (context) => UserCubit(userRepository),
+        child: BlocListener<UserCubit, UserState>(
+                listener: (context, state) {
             if (state is UserLoadedState){
-              // Navigator.pushReplacementNamed(context, "/main");
-              Navigator.pushReplacementNamed(context, "/main");
-              // Navigator.pushReplacementNamed(context, "/main");
+            // Navigator.pushReplacementNamed(context, "/main");
+            Navigator.pushReplacementNamed(context, "/main");
+            // Navigator.pushReplacementNamed(context, "/main");
             } else{
-              child: SafeArea(
-                child: Scaffold(
-                  appBar: AppBar(
-                    title: Center(
-                      child: Text('auth'),
-                    ),
-                  ),
-                  body: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            ElevatedButton(
-                                onPressed: () {
-                                  try {
-                                    UserCubit userCubit =
-                                    BlocProvider.of<UserCubit>(context);
-                                    // auth(context);
-                                    userCubit.fetchUser();
-                                    print(userCubit);
-                                  } catch (e) {
-                                    print(e);
-                                  }
-                                },
-                                child: Text('Google Sign In'))
-                          ],
-                        ),
-                      ]),
-                ),
-              );
+            child: SafeArea(
+            child: Scaffold(
+            appBar: AppBar(
+            title: Center(
+            child: Text('auth'),
+            ),
+            ),
+            body: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+            Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+            ElevatedButton(
+            onPressed: () {
+            try {
+            UserCubit userCubit =
+            BlocProvider.of<UserCubit>(context);
+            // auth(context);
+            userCubit.fetchUser();
+            print(userCubit);
+            } catch (e) {
+            print(e);
             }
-          },
-          child: BlocBuilder<UserCubit, UserState>(
-          builder: (context, state){
-            if(state is UserEmptyState){
-              return SafeArea(
-                child: Scaffold(
-                  appBar: AppBar(
-                    title: Center(
-                      child: Text('auth'),
-                    ),
-                  ),
-                  body: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            ElevatedButton(
-                                onPressed: () {
-                                  try {
-                                    UserCubit userCubit =
-                                    BlocProvider.of<UserCubit>(context);
-                                    // auth(context);
-                                    userCubit.fetchUser();
-                                    print(userCubit);
-                                  } catch (e) {
-                                    print(e);
-                                  }
-                                },
-                                child: Text('Google Sign In'))
-                          ],
-                        ),
-                      ]),
-                ),
-              );
-            } else{
-              return SafeArea(
-                child: Scaffold(
-                  appBar: AppBar(
-                    title: Center(
-                      child: Text('auth'),
-                    ),
-                  ),
-                  body: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Center(child: CircularProgressIndicator(),)
-                          ],
-                        ),
-                      ]),
-                ),
+            },
+            child: Text('Google Sign In'))
+            ],
+            ),
+            ]),
+            ),
             );
+            }
+            },
+            child: BlocBuilder<UserCubit, UserState>(
+              builder: (context, state){
+                if(state is UserEmptyState){
+                  return SafeArea(
+                    child: Scaffold(
+                      appBar: AppBar(
+                        title: Center(
+                          child: Text('auth'),
+                        ),
+                      ),
+                      body: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                ElevatedButton(
+                                    onPressed: () {
+                                      try {
+                                        UserCubit userCubit =
+                                        BlocProvider.of<UserCubit>(context);
+                                        // auth(context);
+                                        userCubit.fetchUser();
+                                        print(userCubit);
+                                      } catch (e) {
+                                        print(e);
+                                      }
+                                    },
+                                    child: Text('Google Sign In'))
+                              ],
+                            ),
+                          ]),
+                    ),
+                  );
+                } else{
+                  return SafeArea(
+                    child: Scaffold(
+                      appBar: AppBar(
+                        title: Center(
+                          child: Text('auth'),
+                        ),
+                      ),
+                      body: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Center(child: CircularProgressIndicator(),)
+                              ],
+                            ),
+                          ]),
+                    ),
+                  );
 
-            };
-    },));
+                };
+              },)),);
 
     //   SafeArea(
     //   child: Scaffold(
