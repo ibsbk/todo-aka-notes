@@ -13,8 +13,7 @@ class HTTPRequests {
     return userIdResponse;
   }
 
-  void auth(context, googleAccount) async {
-    try {
+  Future<dynamic> auth(googleAccount) async {
       var getUserResponse = await getUserId(googleAccount);
       if (getUserResponse.statusCode != 200) {
         var addUserUrl = Uri.parse('https://10.0.2.2:7168/api/users/add_user');
@@ -25,21 +24,13 @@ class HTTPRequests {
         var addUserResponse = await http.put(addUserUrl,
             headers: {"Content-Type": "application/json"}, body: user);
         if (addUserResponse.statusCode == 200) {
-          // Navigator.pushReplacement(
-          //     context,
-          //     new MaterialPageRoute(
-          //         builder: (__) =>
-          //             new MainScreen(googleAccount: googleAccount)));
-        } else {}
+          return addUserResponse.body;
+        } else {
+          // throw Exception('Error');
+        }
       } else {
-        // Navigator.pushReplacement(
-        //     context,
-        //     new MaterialPageRoute(
-        //         builder: (__) => new MainScreen(googleAccount: googleAccount)));
+        return getUserResponse.body;
       }
-    } catch (e) {
-
-    }
   }
 
   void createNote(context, text, googleAccount) async {

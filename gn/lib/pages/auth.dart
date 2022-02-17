@@ -39,129 +39,97 @@ class _AuthScreenState extends State<AuthScreen> {
   Widget build(BuildContext context) {
     final googleAuth = new GoogleAuth();
     UserRepository userRepository = new UserRepository();
-    return BlocProvider(create: (context) => UserCubit(userRepository),
-        child: BlocListener<UserCubit, UserState>(
-                listener: (context, state) {
-            if (state is UserLoadedState){
-            // Navigator.pushReplacementNamed(context, "/main");
-            Navigator.pushReplacementNamed(context, "/main");
-            // Navigator.pushReplacementNamed(context, "/main");
-            } else{
-            child: SafeArea(
-            child: Scaffold(
-            appBar: AppBar(
+    return BlocProvider(
+      create: (context) => UserCubit(userRepository),
+      child: SafeArea(
+        child: Scaffold(
+          appBar: AppBar(
             title: Center(
-            child: Text('auth'),
+              child: Text('auth'),
             ),
-            ),
-            body: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-            Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-            ElevatedButton(
-            onPressed: () {
-            try {
-            UserCubit userCubit =
-            BlocProvider.of<UserCubit>(context);
-            // auth(context);
-            userCubit.fetchUser();
-            print(userCubit);
-            } catch (e) {
-            print(e);
+          ),
+          body: BlocListener<UserCubit, UserState>(listener: (context, state) {
+            if (state is UserLoadedState) {
+              Navigator.pushReplacementNamed(context, "/main");
+            } else {
+              Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ElevatedButton(
+                        onPressed: () {
+                          try {
+                            UserCubit userCubit =
+                                BlocProvider.of<UserCubit>(context);
+                            // auth(context);
+                            userCubit.fetchUser();
+                            print(userCubit);
+                          } catch (e) {
+                            print(e);
+                          }
+                        },
+                        child: Text('Google Sign In'))
+                  ],
+                ),
+              ]);
             }
-            },
-            child: Text('Google Sign In'))
-            ],
-            ),
-            ]),
-            ),
-            );
-            }
-            },
-            child: BlocBuilder<UserCubit, UserState>(
-              builder: (context, state){
-                if(state is UserEmptyState){
-                  return SafeArea(
-                    child: Scaffold(
-                      appBar: AppBar(
-                        title: Center(
-                          child: Text('auth'),
-                        ),
+          }, child: BlocBuilder<UserCubit, UserState>(
+            builder: (context, state) {
+              if (state is UserEmptyState) {
+                return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                              onPressed: () {
+                                try {
+                                  UserCubit userCubit =
+                                      BlocProvider.of<UserCubit>(context);
+                                  // auth(context);
+                                  userCubit.fetchUser();
+                                  print(userCubit);
+                                } catch (e) {
+                                  print(e);
+                                }
+                              },
+                              child: Text('Google Sign In'))
+                        ],
                       ),
-                      body: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                ElevatedButton(
-                                    onPressed: () {
-                                      try {
-                                        UserCubit userCubit =
-                                        BlocProvider.of<UserCubit>(context);
-                                        // auth(context);
-                                        userCubit.fetchUser();
-                                        print(userCubit);
-                                      } catch (e) {
-                                        print(e);
-                                      }
-                                    },
-                                    child: Text('Google Sign In'))
-                              ],
-                            ),
-                          ]),
-                    ),
-                  );
-                } else{
-                  return SafeArea(
-                    child: Scaffold(
-                      appBar: AppBar(
-                        title: Center(
-                          child: Text('auth'),
-                        ),
+                    ]);
+              } if (state is UserErrorState){
+                return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Center(
+                            child: Text('da'),
+                          )
+                        ],
                       ),
-                      body: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Center(child: CircularProgressIndicator(),)
-                              ],
-                            ),
-                          ]),
-                    ),
-                  );
-
-                };
-              },)),);
-
-    //   SafeArea(
-    //   child: Scaffold(
-    //     appBar: AppBar(
-    //       title: Center(
-    //         child: Text('auth'),
-    //       ),
-    //     ),
-    //     body: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-    //       Row(
-    //         mainAxisAlignment: MainAxisAlignment.center,
-    //         children: [
-    //           ElevatedButton(
-    //               onPressed: () {
-    //                 try {
-    //                   auth(context);
-    //                 } catch (e) {
-    //                   print(e);
-    //                 }
-    //               },
-    //               child: Text('Google Sign In'))
-    //         ],
-    //       ),
-    //     ]),
-    //   ),
-    // );
+                    ]);
+              }
+              else {
+                return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        ],
+                      ),
+                    ]);
+              }
+            },
+          )),
+        ),
+      ),
+    );
   }
 }
