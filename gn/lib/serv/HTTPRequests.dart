@@ -36,23 +36,23 @@ class HTTPRequests {
   void createNote(context, text, googleAccount) async {
     try{
       if (text != '') {
+        print('111111');
         var url = Uri.parse('https://10.0.2.2:7168/api/notes/add_note');
+        print('2222222222');
         var userId = await getUserId(googleAccount);
+        print(userId.body);
         var now = DateTime.now().toIso8601String();
+        print(now);
         var note = jsonEncode({
           "note": text,
           "created_at": now.toString(),
-          "user_id": userId.body.toString(),
+          "user_id": userId.body,
           "isDone": false,
         });
+        print(userId.body);
         var response = await http.put(url,
             headers: {"Content-Type": "application/json"}, body: note);
-        if (response.statusCode == 200) {
-          // Navigator.pushReplacement(
-          //     context,
-          //     new MaterialPageRoute(
-          //         builder: (__) => new MainScreen(googleAccount: googleAccount)));
-        }
+        if (response.statusCode == 200) {}
       } else {
         showDialog<String>(
           context: context,
@@ -69,6 +69,9 @@ class HTTPRequests {
         );
       }
     } catch (e){
+      print('_______________');
+      print(e);
+      print('_______________');
       showDialog<String>(
         context: context,
         builder: (BuildContext context) => AlertDialog(
@@ -104,6 +107,7 @@ class HTTPRequests {
       });
       return allNotes;
     } catch(e){
+      print(e);
       // showDialog<String>(
       //   context: context,
       //   builder: (BuildContext context) => AlertDialog(
@@ -117,7 +121,7 @@ class HTTPRequests {
       //     ],
       //   ),
       // );
-      return [];
+      return ['z'];
     }
   }
 

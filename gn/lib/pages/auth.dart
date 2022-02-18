@@ -37,7 +37,6 @@ class _AuthScreenState extends State<AuthScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final googleAuth = new GoogleAuth();
     UserRepository userRepository = new UserRepository();
     return BlocProvider(
       create: (context) => UserCubit(userRepository),
@@ -87,7 +86,6 @@ class _AuthScreenState extends State<AuthScreen> {
                                 try {
                                   UserCubit userCubit =
                                       BlocProvider.of<UserCubit>(context);
-                                  // auth(context);
                                   userCubit.fetchUser();
                                   print(userCubit);
                                 } catch (e) {
@@ -98,7 +96,7 @@ class _AuthScreenState extends State<AuthScreen> {
                         ],
                       ),
                     ]);
-              } if (state is UserErrorState){
+              } else if (state is UserErrorState) {
                 return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -106,13 +104,12 @@ class _AuthScreenState extends State<AuthScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Center(
-                            child: Text('da'),
+                            child: Text('Ошибка'),
                           )
                         ],
                       ),
                     ]);
-              }
-              else {
+              } else {
                 return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

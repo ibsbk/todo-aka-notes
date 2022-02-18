@@ -2,11 +2,12 @@ import 'package:gn/pages/mainscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:gn/serv/HTTPRequests.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:gn/serv/google_sign_in.dart';
 
 class CreateScreen extends StatefulWidget {
-  final googleAccount;
+  // final googleAccount;
 
-  CreateScreen({this.googleAccount});
+  // CreateScreen({this.googleAccount});
 
   @override
   _CreateScreenState createState() => _CreateScreenState();
@@ -77,8 +78,10 @@ class _CreateScreenState extends State<CreateScreen> {
                     child: ElevatedButton(
                       onPressed: () async {
                         try {
+                          GoogleAuth googleSignIn = new GoogleAuth();
+                          await googleSignIn.googleLogin();
                           request.createNote(context, textControl.text,
-                              widget.googleAccount);
+                              googleSignIn.googleSignIn.currentUser);
                         } catch (e) {
                           print(e);
                         }

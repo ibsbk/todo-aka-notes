@@ -22,7 +22,6 @@ class GoogleAuth extends ChangeNotifier{
   }
 
   void signOut() async{
-    final googleUser = await googleSignIn.signIn();
     googleSignIn.disconnect();
     _auth.signOut();
   }
