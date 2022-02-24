@@ -4,7 +4,7 @@ import 'package:gn/cubit/user_cubit.dart';
 import 'package:gn/cubit/user_state.dart';
 import 'package:gn/serv/google_sign_in.dart';
 import 'package:gn/serv/HTTPRequests.dart';
-import 'package:gn/serv/user_repository.dart';
+import 'package:gn/data/user_repository.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({Key? key}) : super(key: key);
@@ -38,6 +38,7 @@ class _AuthScreenState extends State<AuthScreen> {
   @override
   Widget build(BuildContext context) {
     UserRepository userRepository = new UserRepository();
+    print(userRepository);
     return BlocProvider(
       create: (context) => UserCubit(userRepository),
       child: SafeArea(

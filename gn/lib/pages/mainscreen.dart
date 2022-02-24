@@ -2,15 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gn/cubit/note_cubit.dart';
 import 'package:gn/cubit/note_state.dart';
-import 'package:gn/pages/auth.dart';
-import 'package:gn/pages/create.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:gn/pages/edit.dart';
 import 'package:gn/serv/HTTPRequests.dart';
 import 'package:gn/serv/google_sign_in.dart';
-import 'package:gn/serv/note_repository.dart';
-import 'package:gn/serv/user_repository.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:gn/data/note_repository.dart';
+import 'package:gn/data/user_repository.dart';
+import 'package:gn/wid/task-list.dart';
 
 class MainScreen extends StatefulWidget {
   // MainScreen({this.googleAccount});
@@ -110,61 +108,7 @@ class _MainScreenState extends State<MainScreen> {
                     ]);
               } else if (state is NoteLoadedState) {
                 var notesList = state.loadedNote.toList();
-                return ListView.builder(
-                    itemCount: notesList.length,
-                    itemBuilder: (context, index) {
-                      if (notesList[index].isdone == true) {
-                        return Container(
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colors.black,
-                                width: 1,
-                              ),
-                              color: Colors.green),
-                          margin: const EdgeInsets.all(10.0),
-                          child: ListTile(
-                            title: Text(notesList[index].note),
-                            shape: RoundedRectangleBorder(
-                                borderRadius:
-                                BorderRadius.circular(20.0)),
-                            onTap: () {
-                              setState(() {
-                                try {
-                                  request.isDoneChange(
-                                      context, notesList[index], false);
-                                } catch (e) {}
-                              });
-                            },
-                            onLongPress: () {},
-                          ),
-                        );
-                      } else {
-                        return Container(
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Colors.black,
-                                width: 1,
-                              ),
-                              color: Colors.red),
-                          margin: const EdgeInsets.all(10.0),
-                          child: ListTile(
-                            title: Text(notesList[index].note),
-                            shape: RoundedRectangleBorder(
-                                borderRadius:
-                                BorderRadius.circular(20.0)),
-                            onTap: () {
-                              setState(() {
-                                try {
-                                  request.isDoneChange(
-                                      context, notesList[index], true);
-                                } catch (e) {}
-                              });
-                            },
-                            onLongPress: () {},
-                          ),
-                        );
-                      }
-                    });
+                return TaskList(tasks: notesList);
               } else {
                 return Column(
                     mainAxisAlignment: MainAxisAlignment.center,

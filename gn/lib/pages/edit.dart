@@ -1,14 +1,11 @@
+import 'package:gn/mod/Note.dart';
 import 'package:gn/pages/mainscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:gn/serv/HTTPRequests.dart';
+import 'package:gn/serv/google_sign_in.dart';
 
 class EditScreen extends StatefulWidget {
-  final googleAccount;
-  var note;
-
-  EditScreen({this.googleAccount, this.note});
-
   @override
   _EditScreenState createState() => _EditScreenState();
 }
@@ -28,8 +25,10 @@ class _EditScreenState extends State<EditScreen> {
 
   @override
   Widget build(BuildContext context) {
-    String noticeText = widget.note.note;
-    var textControl = TextEditingController()..text = widget.note.note;
+    final GoogleAuth googleAccount = new GoogleAuth();
+    final note = ModalRoute.of(context)!.settings.arguments as Note;
+    String noticeText = '';
+    var textControl = TextEditingController()..text = note.note!;
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -47,10 +46,12 @@ class _EditScreenState extends State<EditScreen> {
               Column(
                 children: [
                   ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         try {
-                          request.deleteNote(
-                              context, widget.note, widget.googleAccount);
+                          await googleAccount.googleLogin();
+                          await request.deleteNote(
+                              note, googleAccount.googleSignIn.currentUser!.id);
+                          Navigator.pushReplacementNamed(context, '/main');
                         } catch (e) {
                           print(e);
                         }
@@ -105,8 +106,8 @@ class _EditScreenState extends State<EditScreen> {
                       onPressed: () {
                         setState(() {
                           try {
-                            request.editNote(context, textControl.text,
-                                widget.note, widget.googleAccount);
+                            request.editNote(context, textControl.text, note,
+                                googleAccount.googleSignIn.currentUser!.id);
                           } catch (e) {
                             print(e);
                           }
@@ -124,12 +125,7 @@ class _EditScreenState extends State<EditScreen> {
                     child: ElevatedButton(
                       onPressed: () {
                         setState(() {
-                          Navigator.pushReplacement(
-                              context,
-                              new MaterialPageRoute(
-                                  builder: (__) => new MainScreen(
-                                      // googleAccount: widget.googleAccount
-                                  )));
+                          Navigator.pushReplacementNamed(context, '/main');
                         });
                       },
                       child: Text('Отмена'),

@@ -80,8 +80,9 @@ class _CreateScreenState extends State<CreateScreen> {
                         try {
                           GoogleAuth googleSignIn = new GoogleAuth();
                           await googleSignIn.googleLogin();
-                          request.createNote(context, textControl.text,
+                          await request.createNote(context, textControl.text,
                               googleSignIn.googleSignIn.currentUser);
+                          Navigator.pushReplacementNamed(context, '/main');
                         } catch (e) {
                           print(e);
                         }
@@ -98,12 +99,7 @@ class _CreateScreenState extends State<CreateScreen> {
                     child: ElevatedButton(
                       onPressed: () {
                         setState(() {
-                          Navigator.pushReplacement(
-                              context,
-                              new MaterialPageRoute(
-                                  builder: (__) => new MainScreen(
-                                      // googleAccount: widget.googleAccount
-                                  )));
+                          Navigator.pushReplacementNamed(context, '/main');
                         });
                       },
                       child: Text('Отмена'),

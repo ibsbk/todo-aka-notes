@@ -7,6 +7,7 @@ class GoogleAuth extends ChangeNotifier{
 
   var _auth = FirebaseAuth.instance;
 
+
   Future googleLogin() async{
     final googleUser = await googleSignIn.signIn();
     if (googleUser == null) {

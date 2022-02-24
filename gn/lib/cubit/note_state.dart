@@ -10,4 +10,8 @@ class NoteLoadedState extends NoteState{
   NoteLoadedState({required this.loadedNote}) : assert(loadedNote!=null);
 }
 
+class NoteCreatingState extends NoteState{}
+
+class NoteCreatedState extends NoteState{}
+
 class NoteErrorState extends NoteState{}

@@ -7,7 +7,7 @@ import 'package:gn/pages/edit.dart';
 import 'package:gn/pages/create.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'dart:io';
-import 'package:gn/serv/user_repository.dart';
+import 'package:gn/data/user_repository.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override

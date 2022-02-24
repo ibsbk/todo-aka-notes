@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gn/mod/User.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:gn/pages/mainscreen.dart';
@@ -7,34 +8,40 @@ import 'package:gn/mod/Note.dart';
 class HTTPRequests {
   Future<http.Response> getUserId(googleAccount) async {
     var userIdUrl = Uri.parse(
-        'https://10.0.2.2:7168/api/users/get_userId/' + googleAccount?.id);
+        'https://10.0.2.2:7168/api/users/get_userId/' + googleAccount);
     var userIdResponse =
         await http.get(userIdUrl, headers: {"Content-Type": "text"});
     return userIdResponse;
   }
 
-  Future<dynamic> auth(googleAccount) async {
-      var getUserResponse = await getUserId(googleAccount);
-      if (getUserResponse.statusCode != 200) {
-        var addUserUrl = Uri.parse('https://10.0.2.2:7168/api/users/add_user');
-        var user = jsonEncode({
-          "google_id": googleAccount!.id,
-          "name": googleAccount!.displayName
-        });
-        var addUserResponse = await http.put(addUserUrl,
-            headers: {"Content-Type": "application/json"}, body: user);
-        if (addUserResponse.statusCode == 200) {
-          return addUserResponse.body;
-        } else {
-          // throw Exception('Error');
-        }
-      } else {
-        return getUserResponse.body;
-      }
+  Future<http.Response> getUser(googleAccount) async {
+    var userIdUrl =
+        Uri.parse('https://10.0.2.2:7168/api/users/get_user/' + googleAccount);
+    var userIdResponse =
+        await http.get(userIdUrl, headers: {"Content-Type": "text"});
+    return userIdResponse;
   }
 
-  void createNote(context, text, googleAccount) async {
-    try{
+  Future<dynamic> auth(User googleAccount) async {
+    var getUserResponse = await getUserId(googleAccount.id.toString());
+    if (getUserResponse.statusCode != 200) {
+      var addUserUrl = Uri.parse('https://10.0.2.2:7168/api/users/add_user');
+      var user = jsonEncode(
+          {"google_id": googleAccount.id, "name": googleAccount.name});
+      var addUserResponse = await http.put(addUserUrl,
+          headers: {"Content-Type": "application/json"}, body: user);
+      if (addUserResponse.statusCode == 200) {
+        return addUserResponse.body;
+      } else {
+        // throw Exception('Error');
+      }
+    } else {
+      return getUserResponse.body;
+    }
+  }
+
+  Future<void> createNote(context, text, googleAccount) async {
+    try {
       if (text != '') {
         print('111111');
         var url = Uri.parse('https://10.0.2.2:7168/api/notes/add_note');
@@ -68,10 +75,8 @@ class HTTPRequests {
           ),
         );
       }
-    } catch (e){
-      print('_______________');
+    } catch (e) {
       print(e);
-      print('_______________');
       showDialog<String>(
         context: context,
         builder: (BuildContext context) => AlertDialog(
@@ -89,10 +94,10 @@ class HTTPRequests {
   }
 
   Future<List> getAllNotes(google_id) async {
-    try{
+    try {
       var allNotes = [];
       var getUserUrl =
-      Uri.parse('https://10.0.2.2:7168/api/users/get_userId/' + google_id);
+          Uri.parse('https://10.0.2.2:7168/api/users/get_userId/' + google_id);
       var getUserResponse = await http
           .get(getUserUrl, headers: {"Content-Type": "application/json"});
       var getAllNotesUrl = Uri.parse(
@@ -100,13 +105,13 @@ class HTTPRequests {
               getUserResponse.body);
       var getAllNotesResponse = await http
           .get(getAllNotesUrl, headers: {"Content-Type": "application/json"});
-      var userMap = jsonDecode(getAllNotesResponse.body);
-      userMap.forEach((e) {
+      var noteMap = jsonDecode(getAllNotesResponse.body);
+      noteMap.forEach((e) {
         Note note = Note.fromJson(e);
         allNotes.add(note);
       });
       return allNotes;
-    } catch(e){
+    } catch (e) {
       print(e);
       // showDialog<String>(
       //   context: context,
@@ -121,12 +126,12 @@ class HTTPRequests {
       //     ],
       //   ),
       // );
-      return ['z'];
+      return [];
     }
   }
 
   void isDoneChange(context, note, isDone) async {
-    try{
+    try {
       note.isdone = isDone;
       var url = Uri.parse('https://10.0.2.2:7168/api/notes/edit_note');
       var body = {
@@ -139,7 +144,7 @@ class HTTPRequests {
       var noteJSON = jsonEncode(body);
       await http.patch(url,
           headers: {"Content-Type": "application/json"}, body: noteJSON);
-    } catch(e){
+    } catch (e) {
       showDialog<String>(
         context: context,
         builder: (BuildContext context) => AlertDialog(
@@ -156,8 +161,8 @@ class HTTPRequests {
     }
   }
 
-  void deleteNote(context, note, googleAccount) async {
-    try{
+  Future<void> deleteNote(note, googleAccount) async {
+    try {
       var url = Uri.parse('https://10.0.2.2:7168/api/notes/delete_note');
       var deleteNote = jsonEncode({
         "id": note.id,
@@ -174,25 +179,13 @@ class HTTPRequests {
         //     new MaterialPageRoute(
         //         builder: (__) => new MainScreen(googleAccount: googleAccount)));
       }
-    } catch(e){
-      showDialog<String>(
-        context: context,
-        builder: (BuildContext context) => AlertDialog(
-          title: const Text('Ошибка'),
-          content: const Text('Ошибка при удалении'),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, 'OK'),
-              child: const Text('OK'),
-            ),
-          ],
-        ),
-      );
+    } catch (e) {
+      print(e);
     }
   }
 
   void editNote(context, noticeText, note, googleAccount) async {
-    try{
+    try {
       if (noticeText != '') {
         var url = Uri.parse('https://10.0.2.2:7168/api/notes/edit_note');
         var noteNew = jsonEncode({
@@ -239,7 +232,7 @@ class HTTPRequests {
           ),
         );
       }
-    } catch(e){
+    } catch (e) {
       showDialog<String>(
         context: context,
         builder: (BuildContext context) => AlertDialog(
